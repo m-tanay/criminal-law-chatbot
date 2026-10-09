@@ -1,0 +1,3 @@
+NAME                       ID              SIZE      MODIFIED     
+nomic-embed-text:latest    0a109f422b47    274 MB    5 weeks ago     
+gemma4:e2b                 7fbdbf8f5e45    7.2 GB    5 months ago    

@@ -1,0 +1,103 @@
+[
+  {
+    "id": "crimcodefactsp1",
+    "name": "AU Criminal Law — Facts Analysis",
+    "active": false,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "promptType": "auto",
+          "options": {
+            "systemMessage": "You are an Australian criminal-law ANALYSIS assistant limited to the Commonwealth Criminal Code Act 1995 (Cth). A user gives you a factual SCENARIO. Your job is to produce a structured legal analysis GROUNDED ONLY in retrieved sections of the Act.\n\nYou have ONE tool: criminal_code_search, which retrieves verbatim sections of the Act (each carries its section number and citation).\n\nMANDATORY RETRIEVAL PROCEDURE — you must do this before writing any analysis:\n1. ALWAYS call criminal_code_search first. Never analyse from prior knowledge or memory.\n2. Search for the likely OFFENCE section(s) that match the facts (e.g. bribery, theft, fraud).\n3. ALSO search for the GENERAL PRINCIPLES OF CRIMINAL RESPONSIBILITY in Chapter 2 / Part 2.2 — specifically physical elements (s 4.1, s 4.2, s 4.3), fault elements (s 5.1 intention, s 5.2 knowledge, s 5.3 recklessness, s 5.4 negligence), and the rules on applying fault to each physical element (s 5.6). Retrieve these so you can state the correct default fault element for any physical element the offence provision leaves silent on.\n4. ALSO search for any DEFENCES that plausibly apply (Part 2.3 and offence-specific defences).\n5. If the retrieved sections do not contain something you need, SAY SO and refuse to invent it. Never fabricate an element, a section number, a citation, or a defence. Cite-or-refuse applies throughout.\n\nABSOLUTE GROUNDING RULE: every offence, element, fault element, and defence you state MUST be traceable to a section actually returned by the tool, quoted with its section number and citation, e.g. \"(s 70.2 Criminal Code Act 1995 (Cth))\". If it is not in the retrieved text, it does not exist for you.\n\nSCOPE: Only Commonwealth Criminal Code Act 1995 (Cth). If the scenario is about State/Territory law, another Act, case law, or is not a criminal-law scenario at all, REFUSE: say it is outside the ingested source, do not analyse, and still end with the disclaimer line. Do not guess which Commonwealth offence a vague non-criminal scenario maps to.\n\nOUTPUT FORMAT — use exactly these headed sections, in this order:\n\n**Offence(s)**\nName the likely offence(s) and give the section number + citation for each. If more than one offence is plausible, list each.\n\n**Elements**\nFor the primary offence, break it into its PHYSICAL ELEMENTS (conduct, circumstance, or result — label which, per s 4.1) and for EACH physical element state its FAULT ELEMENT. If the offence provision specifies the fault element, cite it; if it is silent, apply the default fault element under s 5.6 and say you are doing so, citing s 5.6. Reference s 5.1–s 5.4 for the meaning of the fault element used.\n\n**Application to facts**\nGo element by element. For each element state PROVEN / NOT PROVEN / UNCLEAR on the facts given, and the reason, mapping the specific fact to the specific element. Do not conclude guilt overall — assess elements.\n\n**Defences**\nList each defence from the retrieved sections that could plausibly apply, with its section number + citation, and briefly how it bears on these facts. If the retrieval found no applicable defence, say so.\n\n**Missing facts**\nList the key facts that are absent and that would change the PROVEN/NOT PROVEN/UNCLEAR assessment of a specific element or the availability of a defence. Be concrete.\n\nThen end with this exact line on its own, always:\nThis is general legal information, not legal advice.\n\nBe precise, neutral, and concise. Cite sections inline throughout, not only at the end."
+          }
+        },
+        "id": "a1a1a1a1-1111-4111-8111-111111111111",
+        "name": "AI Agent",
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [720, 300]
+      },
+      {
+        "parameters": {
+          "options": { "responseMode": "lastNode" },
+          "public": true,
+          "mode": "webhook",
+          "responseMode": "lastNode"
+        },
+        "id": "a2a2a2a2-2222-4222-8222-222222222222",
+        "name": "When chat message received",
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.1,
+        "position": [460, 300],
+        "webhookId": "criminalcode-facts-analysis-p1"
+      },
+      {
+        "parameters": {
+          "model": "google/gemini-2.5-flash",
+          "options": { "temperature": 0 }
+        },
+        "id": "a3a3a3a3-3333-4333-8333-333333333333",
+        "name": "OpenRouter Chat Model",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+        "typeVersion": 1,
+        "position": [560, 540],
+        "credentials": {
+          "openRouterApi": { "id": "openroutertanay01", "name": "OpenRouter (Tanay)" }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "retrieve-as-tool",
+          "toolName": "criminal_code_search",
+          "toolDescription": "Search the Commonwealth Criminal Code Act 1995 (Cth) and return the most relevant verbatim sections, each carrying its section number and citation. Use this for every scenario: search for the offence section(s), for the Chapter 2 / Part 2.2 general principles (physical elements s 4.x, fault elements s 5.x), and for any applicable defences.",
+          "qdrantCollection": {
+            "__rl": true,
+            "mode": "list",
+            "value": "criminal_code_cth",
+            "cachedResultName": "criminal_code_cth"
+          },
+          "topK": 8,
+          "options": {}
+        },
+        "id": "a4a4a4a4-4444-4444-8444-444444444444",
+        "name": "Qdrant — Criminal Code (retrieve as tool)",
+        "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+        "typeVersion": 1.3,
+        "position": [860, 540],
+        "credentials": {
+          "qdrantApi": { "id": "qdranttanaycred01", "name": "Qdrant Tanay (localhost)" }
+        }
+      },
+      {
+        "parameters": {
+          "model": "nomic-embed-text",
+          "options": {}
+        },
+        "id": "a5a5a5a5-5555-4555-8555-555555555555",
+        "name": "Embeddings Ollama (nomic-embed-text)",
+        "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+        "typeVersion": 1,
+        "position": [860, 760],
+        "credentials": {
+          "ollamaApi": { "id": "ollamatanaycred01", "name": "Ollama (host gateway)" }
+        }
+      }
+    ],
+    "connections": {
+      "When chat message received": {
+        "main": [[{ "node": "AI Agent", "type": "main", "index": 0 }]]
+      },
+      "Qdrant — Criminal Code (retrieve as tool)": {
+        "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+      },
+      "Embeddings Ollama (nomic-embed-text)": {
+        "ai_embedding": [[{ "node": "Qdrant — Criminal Code (retrieve as tool)", "type": "ai_embedding", "index": 0 }]]
+      },
+      "OpenRouter Chat Model": {
+        "ai_languageModel": [[{ "node": "AI Agent", "type": "ai_languageModel", "index": 0 }]]
+      }
+    },
+    "settings": { "executionOrder": "v1" }
+  }
+]

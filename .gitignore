@@ -1,0 +1,23 @@
+# secrets / env
+.env
+*.env
+hub.env
+secrets*.json
+credentials*.json
+*.key
+
+# deps / build
+node_modules/
+dist/
+.vite/
+__pycache__/
+*.pyc
+
+# data (large corpora / DBs — not for git)
+data/
+*.jsonl
+*.sqlite
+*.sqlite-*
+
+# logs
+*.log

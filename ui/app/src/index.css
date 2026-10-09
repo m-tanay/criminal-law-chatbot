@@ -1,0 +1,273 @@
+@import "@fontsource/newsreader/400.css";
+@import "@fontsource/newsreader/500.css";
+@import "@fontsource/newsreader/600.css";
+@import "@fontsource/newsreader/400-italic.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- Design tokens — "Chambers" design system ---- */
+:root,
+.dark {
+  /* Dark, ink-navy chambers — default. Layered surfaces give real depth. */
+  --bg: #080b11;
+  --bg-elev: #0c1118;
+  --surface: #11161f;
+  --surface-2: #171e2a;
+  --surface-3: #1e2736;
+  --border: #253142;
+  --border-strong: #324155;
+  --text: #eef2f7;
+  --text-muted: #9fadbc;
+  --text-faint: #6b7a8b;
+  --accent: #caa86e; /* warm brass */
+  --accent-bright: #e0c488;
+  --accent-weak: #251f13;
+  --accent-soft: rgba(202, 168, 110, 0.12);
+  --legal: #6fc0a3; /* refined legal green */
+  --legal-weak: rgba(111, 192, 163, 0.14);
+  --user-bubble: #1a2433;
+  --danger: #e68a8a;
+  --accent-ring: rgba(202, 168, 110, 0.2);
+  /* Ambient hero glows */
+  --glow-a: rgba(202, 168, 110, 0.1);
+  --glow-b: rgba(111, 192, 163, 0.07);
+  --header-grad: linear-gradient(180deg, rgba(202,168,110,0.04), transparent 70%);
+  color-scheme: dark;
+}
+
+.light {
+  /* Light "brief on paper" — warm, authoritative. */
+  --bg: #f6f4ee;
+  --bg-elev: #faf8f3;
+  --surface: #ffffff;
+  --surface-2: #f3f0e8;
+  --surface-3: #ebe6da;
+  --border: #e2dccf;
+  --border-strong: #d2c9b5;
+  --text: #171c23;
+  --text-muted: #55606c;
+  --text-faint: #8a8577;
+  --accent: #936f32;
+  --accent-bright: #b08a45;
+  --accent-weak: #efe7d6;
+  --accent-soft: rgba(147, 111, 50, 0.1);
+  --legal: #2b7a60;
+  --legal-weak: rgba(43, 122, 96, 0.1);
+  --user-bubble: #efe9dc;
+  --danger: #b5443f;
+  --accent-ring: rgba(147, 111, 50, 0.18);
+  --glow-a: rgba(147, 111, 50, 0.08);
+  --glow-b: rgba(43, 122, 96, 0.05);
+  --header-grad: linear-gradient(180deg, rgba(147,111,50,0.045), transparent 70%);
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Thin, restrained scrollbars (Linear/Raycast feel) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+/* Focus ring — brass, accessible */
+:where(button, a, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---- Answer prose (serif reading column) ---- */
+.prose-legal {
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+.prose-legal p {
+  margin: 0 0 1rem;
+}
+.prose-legal p:last-child {
+  margin-bottom: 0;
+}
+.prose-legal strong {
+  font-weight: 600;
+}
+.prose-legal em {
+  font-style: italic;
+}
+.prose-legal ul,
+.prose-legal ol {
+  margin: 0 0 1rem;
+  padding-left: 1.4rem;
+}
+.prose-legal li {
+  margin: 0.25rem 0;
+}
+.prose-legal ul {
+  list-style: none;
+}
+.prose-legal ul > li {
+  position: relative;
+}
+.prose-legal ul > li::before {
+  content: "";
+  position: absolute;
+  left: -1rem;
+  top: 0.75em;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  opacity: 0.7;
+}
+.prose-legal h1,
+.prose-legal h2,
+.prose-legal h3 {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.2rem 0 0.6rem;
+}
+.prose-legal a {
+  color: var(--accent);
+  text-underline-offset: 2px;
+}
+
+/* The trailing "not legal advice" line rendered as a quiet inset note */
+.prose-legal p.disclaimer-inline {
+  margin-top: 1.1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-family: "Inter", sans-serif;
+  font-size: 0.8125rem;
+  font-style: normal;
+  color: var(--text-muted);
+}
+
+/* ---- Depth & surface helpers ---- */
+
+/* Ambient radial glow behind the hero — subtle, premium, not flashy. */
+.hero-aura {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 32rem at 50% -8%, var(--glow-a), transparent 60%),
+    radial-gradient(44rem 28rem at 85% 18%, var(--glow-b), transparent 65%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 60%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 60%, transparent 100%);
+}
+
+/* Fine 1px hairline sheen on the top edge of elevated cards. */
+.card-sheen {
+  position: relative;
+}
+.card-sheen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08),
+    transparent 40%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.light .card-sheen::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), transparent 45%);
+}
+
+/* The brand mark gets a soft inner glow so it reads as a crafted emblem. */
+.brand-emblem {
+  background:
+    radial-gradient(120% 120% at 30% 20%, var(--accent-soft), transparent 70%),
+    var(--surface-2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Trust pills on the hero. */
+.trust-pill {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+/* Starter card hover lift. */
+.starter-card {
+  transition:
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.starter-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Section hairline divider with a centered emblem gap. */
+.rule-emblem {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: var(--text-faint);
+}
+.rule-emblem::before,
+.rule-emblem::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .starter-card:hover {
+    transform: none;
+  }
+}
